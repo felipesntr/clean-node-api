@@ -4,8 +4,10 @@
   "description": "study for clean architecture, node and typescript",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll",
-    "test:ci": "jest --coverage"
+    "test": "jest --silent --colors --noStackTrace --passWithNoTests",
+    "test:unit": "npm test -- --watch --config jest-unit-config.js",
+    "test:integration": "npm test -- --watch -c 'jest-integration-config.js'",
+    "test:ci": "npm test -- --coverage"
   },
   "repository": {
     "type": "git",
