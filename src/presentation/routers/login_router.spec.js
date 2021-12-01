@@ -8,6 +8,7 @@ const e = require('express');
 const makeEmailValidator = () => {
     class EmailValidatorSpy {
         isValid(email) {
+            this.email = email;
             return this.isEmailValid;
         }
     }
@@ -240,5 +241,16 @@ describe('Login Router', () => {
         expect(httpResponse.body).toEqual(new ServerError());
     });
 
+    test('Should call EmailValidator with correct email', async () => {
+        let { sut, emailValidatorSpy } = makeSut();
+        let httpRequest = {
+            body: {
+                email: 'any@email.com',
+                password: 'any_password'
+            }
+        };
+        sut.route(httpRequest);
+        expect(emailValidatorSpy.email).toBe(httpRequest.body.email);
+    });
 
 });
