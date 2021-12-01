@@ -72,7 +72,7 @@ describe('Login Router', () => {
     });
 
     test('Should return 200 if valid credentials are provided', () => {
-        let { sut } = makeSut();
+        let { sut, authUseCaseSpy } = makeSut();
         let httpRequest = {
             body: {
                 email: 'valid_email@email.com',
@@ -81,6 +81,7 @@ describe('Login Router', () => {
         };
         let httpResponse = sut.route(httpRequest);
         expect(httpResponse.statusCode).toBe(200);
+        expect(httpResponse.body.accessToken).toEqual(authUseCaseSpy.accessToken);
     });
 
     test('Should return 401 when invalid credentials are provided', () => {
