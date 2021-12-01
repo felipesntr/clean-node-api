@@ -1,0 +1,22 @@
+{
+  "name": "clean-node-api",
+  "version": "1.0.0",
+  "description": "study for clean architecture, node and typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipesntr/clean-node-api.git"
+  },
+  "author": "Felipe Santos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/felipesntr/clean-node-api/issues"
+  },
+  "homepage": "https://github.com/felipesntr/clean-node-api#readme",
+  "devDependencies": {
+    "jest": "^27.4.2"
+  }
+}
