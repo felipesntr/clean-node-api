@@ -18,5 +18,9 @@
   "homepage": "https://github.com/felipesntr/clean-node-api#readme",
   "devDependencies": {
     "jest": "^27.4.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.0.14"
   }
 }
