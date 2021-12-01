@@ -4,7 +4,8 @@
   "description": "study for clean architecture, node and typescript",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "test:ci": "jest --coverage"
   },
   "repository": {
     "type": "git",
