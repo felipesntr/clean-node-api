@@ -24,6 +24,7 @@ const makeLoadUserByEmailRepositorySpy = () => {
     }
     const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
     loadUserByEmailRepositorySpy.user = {
+        id: 'any_id',
         password: 'hashed_password'
     };
     return loadUserByEmailRepositorySpy;
@@ -32,13 +33,27 @@ const makeLoadUserByEmailRepositorySpy = () => {
 const makeSut = () => {
     const encrypterSpy = makeEncrypter();
     const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepositorySpy();
-    const sut = new AuthUseCase(loadUserByEmailRepositorySpy, encrypterSpy);
+    const tokenGeneratorSpy = makeTokenGenerator();
+    const sut = new AuthUseCase(loadUserByEmailRepositorySpy, encrypterSpy, tokenGeneratorSpy);
 
     return {
         sut,
         loadUserByEmailRepositorySpy,
-        encrypterSpy
+        encrypterSpy,
+        tokenGeneratorSpy
     };
+}
+
+const makeTokenGenerator = () => {
+    class TokenGeneratorSpy {
+        async generate(userId) {
+            this.userId = userId;
+            return this.accessToken;
+        }
+    }
+    const tokenGeneratorSpy = new TokenGeneratorSpy();
+    tokenGeneratorSpy.accessToken = 'any_token';
+    return tokenGeneratorSpy;
 }
 
 describe('Auth UseCase', () => {
@@ -87,8 +102,8 @@ describe('Auth UseCase', () => {
     });
 
     test('Should return null if an invalid password is provided', async () => {
-        const { sut, encrypterSpy } = makeSut();
-        encrypterSpy.isValid = false;
+        const { sut, loadUserByEmailRepositorySpy } = makeSut();
+        loadUserByEmailRepositorySpy.user = null;
         const accessToken = await sut.auth('valid_email@email.com', 'invalid_password');
         expect(accessToken).toBeNull();
     });
@@ -100,4 +115,9 @@ describe('Auth UseCase', () => {
         expect(encrypterSpy.hashedPassword).toBe(loadUserByEmailRepositorySpy.user.password);
     });
 
+    test('Should call TokenGenerator with correct userId', async () => {
+        const { sut, loadUserByEmailRepositorySpy, tokenGeneratorSpy } = makeSut();
+        await sut.auth('valid_email@email.com', 'valid_password');
+        expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
+    });
 });
