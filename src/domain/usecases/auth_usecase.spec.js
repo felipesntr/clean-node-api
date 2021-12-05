@@ -47,15 +47,27 @@ const makeLoadUserByEmailRepositoryWithError = () => {
     }
     return new LoadUserByEmailRepositorySpy;
 }
+const makeUpdateAccessTokenRepository = () => {
+    class UpdateAccessTokenRepositorySpy {
+        async update(userId, accessToken) {
+            this.userId = userId;
+            this.accessToken = accessToken;
+        }
+    }
+    const updateAccessTokenRepositorySpy = new UpdateAccessTokenRepositorySpy();
+    return updateAccessTokenRepositorySpy;
+}
 
 const makeSut = () => {
     const encrypterSpy = makeEncrypter();
     const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepository();
+    const updateAccessTokenRepositorySpy = makeUpdateAccessTokenRepository();
     const tokenGeneratorSpy = makeTokenGenerator();
     const sut = new AuthUseCase(
         {
             loadUserByEmailRepository: loadUserByEmailRepositorySpy,
             encrypter: encrypterSpy,
+            updateAccessTokenRepository: updateAccessTokenRepositorySpy,
             tokenGenerator: tokenGeneratorSpy
         });
 
@@ -63,6 +75,7 @@ const makeSut = () => {
         sut,
         loadUserByEmailRepositorySpy,
         encrypterSpy,
+        updateAccessTokenRepositorySpy,
         tokenGeneratorSpy
     };
 }
@@ -136,9 +149,10 @@ describe('Auth UseCase', () => {
     });
 
     test('Should call TokenGenerator with correct userId', async () => {
-        const { sut, loadUserByEmailRepositorySpy, tokenGeneratorSpy } = makeSut();
+        const { sut, loadUserByEmailRepositorySpy, updateAccessTokenRepositorySpy, tokenGeneratorSpy } = makeSut();
         await sut.auth('valid_email@email.com', 'valid_password');
-        expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
+        expect(updateAccessTokenRepositorySpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
+        expect(updateAccessTokenRepositorySpy.accessToken).toBe(tokenGeneratorSpy.accessToken);
     });
 
     test('Should return an accessToken if correct credentials are provided', async () => {
