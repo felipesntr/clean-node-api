@@ -12,5 +12,7 @@ module.exports = {
 
     async disconnect() {
         await this.client.close();
+        this.client = undefined;
+        this.db = undefined;
     }
 }
