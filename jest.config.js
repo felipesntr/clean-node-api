@@ -6,5 +6,6 @@
 module.exports = {
   clearMocks: true,
   coverageProvider: "v8",
-  collectCoverageFrom: ['**/src/**/*.js']
+  collectCoverageFrom: ['**/src/**/*.js'],
+  preset: '@shelf/jest-mongodb',
 };
