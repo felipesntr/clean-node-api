@@ -1,10 +1,10 @@
 module.exports = {
     is_valid: true,
-    string: '',
-    hashed_string: '',
-    async compare(string, hashed_string) {
-        this.string = string;
-        this.hashed_string = hashed_string;
+    value: '',
+    hash: '',
+    async compare(value, hash) {
+        this.value = value;
+        this.hash = hash;
         return this.is_valid;
     }
 }
