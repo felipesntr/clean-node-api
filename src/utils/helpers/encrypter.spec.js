@@ -33,7 +33,4 @@ describe('Encrypter', () => {
         expect(sut.compare()).rejects.toThrow(new MissingParamError('value'));
         expect(sut.compare('any_value')).rejects.toThrow(new MissingParamError('hash'));
     });
-
-
-
 });
