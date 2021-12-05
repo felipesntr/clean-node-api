@@ -2,12 +2,20 @@ const MongoClient = require('mongodb');
 
 let client, db;
 
+
 class LoadUserByEmailRepository {
     constructor(userModel) {
         this.userModel = userModel;
     }
     async load(email) {
-        const user = await this.userModel.findOne({ email });
+        const user = await this.userModel.findOne(
+            { email },
+            {
+                projection: {
+                    password: 1
+                }
+            }
+        );
         return user;
     }
 }
@@ -23,7 +31,6 @@ const makeSut = () => {
 }
 
 describe('LoadUserByEmail Repository', () => {
-
     beforeAll(async () => {
         client = await MongoClient.connect(process.env.MONGO_URL, {
             useNewUrlParser: true,
@@ -48,11 +55,19 @@ describe('LoadUserByEmail Repository', () => {
 
     test('Should return an user if user is found', async () => {
         const { sut, userModel } = makeSut();
-        await userModel.insertOne({
-            email: 'valid_email@email.com'
+        const fakeUser = await userModel.insertOne({
+            email: 'valid_email@email.com',
+            name: 'valid_name',
+            age: 20,
+            state: 'valid_state',
+            city: '_city',
+            password: 'hashed_password'
         });
         const user = await sut.load('valid_email@email.com');
-        expect(user.email).toBe('valid_email@email.com');
+        expect(user).toEqual({
+            _id: fakeUser.ops[0]._id,
+            password: fakeUser.ops[0].password,
+        });
     });
 });
 
